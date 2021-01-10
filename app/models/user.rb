@@ -8,7 +8,19 @@ class User < ApplicationRecord
   attachment :profile_image, destroy: false
   has_many :favorites, dependent: :destroy
   has_many :book_comments, dependent: :destroy
+  
+  has_many :relationships
+  has_many :followings, through: :relationships, source: :follow
+  has_many :reverse_of_relationships, class_name: 'Relationship', foreign_key: 'follow_id'
+  has_many :followers, through: :reverse_of_relationships, source: :user
 
   validates :name, length: {maximum: 20, minimum: 2}, uniqueness: true
   validates :introduction, length: { maximum: 50 }
+  
+  
+
+  def following?(other_user)
+    self.followings.include?(other_user)
+  end
+  
 end

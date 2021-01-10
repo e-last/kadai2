@@ -10,12 +10,23 @@
   <% users.each do |user| %>
     <tbody>
       <tr>
-        <td><%= attachment_image_tag(user, :profile_image, :fill, 50, 50, fallback: "no-image-icon.jpg") %></td>
-        <td><%= user.name %></td>
-        <td><%= link_to 'Show', user_path(user), class: "user_#{user.id}" %></td>
+        <td class="no_new_line"><%= attachment_image_tag(user, :profile_image, :fill, 50, 50, fallback: "no-image-icon.jpg") %></td>
+        <td class="no_new_line"><%= user.name %></td>
+        <td class="no_new_line">フォロー数:<%= user.relationships.count %></td>
+        <td class="no_new_line">フォロワー数:<%= user.reverse_of_relationships.count %></td>
+        <td class="no_new_line">
+          <% unless current_user == user %>
+            <% if current_user.following?(user) %>
+              <p><%= link_to user_relationships_path(user), method: :delete do %>フォロー外す<% end %></p>
+            <% else %>
+              <p><%= link_to user_relationships_path(user), method: :post do %>フォローする<% end %></p>
+            <% end %>
+          <% end %>
+        </td>
+        <td class="no_new line"><%= link_to 'Show', user_path(user), class: "user_#{user.id}" %></td>
       </tr>
     </tbody>
   <% end %>
-  
+
 </table>
 </div>
